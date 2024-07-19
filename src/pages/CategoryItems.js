@@ -1,9 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import CategoryCard from '../components/CategoryCard';
+import { useParams } from 'react-router'
+import EcommerceCard from '../components/EcommerceCard';
 
-
-const Home = () => {
+const CategoryItems = () => {
+  const { cata } = useParams();
+    
 
   const [data, setData] = useState();
   const [load, setLoad] = useState(false);
@@ -14,7 +16,11 @@ const Home = () => {
     const getData = async () => {
       setLoad(true);
       try {
-        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/categories.php');
+        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/filter.php', {
+          params: {
+            c: cata
+          }
+        });
         setLoad(false);
         setData(response.data);
 
@@ -33,22 +39,21 @@ const Home = () => {
     }, []);
 
     if(load){
-      return <h1>Loading....</h1>
+      return <h1>Loading..........</h1>
     }
 
     if(err){
       return <h1>{err}</h1>
     }
 
- 
   return (
-     <div className='p-3 grid grid-cols-3 gap-4'>
+    <div className='p-3 grid grid-cols-3 gap-4'>
 
-     {data?.categories.map((cata, i) => {
-       return <CategoryCard cata={cata} key={i} />
+     {data?.meals.map((meal, i) => {
+       return <EcommerceCard meal={meal} key={i} />
      })}
      </div>
   )
 }
 
-export default Home
+export default CategoryItems
