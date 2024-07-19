@@ -1,39 +1,16 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
 import CategoryCard from '../components/CategoryCard';
+import LoadingCompo from '../components/LoadingCompo';
+import { useApiHooks } from '../hooks/apiHooks';
 
 
 const Home = () => {
 
-  const [data, setData] = useState();
-  const [load, setLoad] = useState(false);
-  const [err, setErr] = useState();
+  const [load, err, data] = useApiHooks({ api: 'https://www.themealdb.com/api/json/v1/1/categories.php' });
 
-   
-    
-    const getData = async () => {
-      setLoad(true);
-      try {
-        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/categories.php');
-        setLoad(false);
-        setData(response.data);
-
-      } catch (err) {
-        setLoad(false);
-        setErr(err?.message);
-        
-        
-      }
-      
-    }
-
-
-    useEffect(() => {
-      getData();
-    }, []);
 
     if(load){
-      return <h1>Loading....</h1>
+     return  <LoadingCompo />
+
     }
 
     if(err){
