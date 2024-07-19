@@ -1,30 +1,43 @@
-import CategoryCard from '../components/CategoryCard';
-import LoadingCompo from '../components/LoadingCompo';
-import { useApiHooks } from '../hooks/apiHooks';
-
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
 const Home = () => {
 
-  const [load, err, data] = useApiHooks({ api: 'https://www.themealdb.com/api/json/v1/1/categories.php' });
+  const [ page, setPage ] = useState(1);
+  const [ data, setData ] = useState();
 
-
-    if(load){
-     return  <LoadingCompo />
-
+   
+    
+    const getData = async () => {
+      
+      try {
+        const response = await axios.get('https://api.themoviedb.org/3/movie/popular', {
+        params: {
+          api_key: '50b29a9dc6fab3e783ec4a8f2565124e',
+          page: page
+        }
+        });
+        setData(response.data);
+      } catch (err) {
+        
+      }
+      
     }
 
-    if(err){
-      return <h1>{err}</h1>
-    }
 
- 
+   useEffect(() => {
+   getData();
+   console.log('hello see');
+   }, [page]);
+      console.log(data);
+      console.log('render');
   return (
-     <div className='p-3 grid grid-cols-3 gap-4'>
+    <div>
+   
+   <button onClick={() => setPage((prev) => prev + 1)} className='bg-black text-white'>{page} Change Page</button>
 
-     {data?.categories.map((cata, i) => {
-       return <CategoryCard cata={cata} key={i} />
-     })}
-     </div>
+
+    </div>
   )
 }
 
