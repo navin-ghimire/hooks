@@ -1,50 +1,42 @@
-import React from 'react'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Home from './pages/Home';
-import About from './pages/About';
-import RootLayout from './components/RootLayout';
-import Contact from './pages/Contact';
-import NotFound from './pages/NotFound';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 const App = () => {
+  const [data, setData] = useState(null);
 
-  const router = createBrowserRouter([
+  const getData = async () => {
+    try {
+      const response = await axios.get('https://dummyjson.com/recipes');
+      setData(response.data);
+    } catch (err) {
+      console.error("Error fetching data: ", err);
+    }
+  }
 
-    {
-      path: '/',
-      element: <RootLayout />,
-      children: [
-        {
-          index: true,
-          element: <Home />,
+  useEffect(() => {
+    getData();
+  }, []);
 
-        },
-
-        {
-          path: 'about-page',
-          element: <About />
-        },
-        {
-          path: 'contact-page',
-          element: <Contact />
-        },
-
-        {
-          path: '*',
-          element: <NotFound />
-        }
-
-
-
-      ]
-
-    },
-
-
-
-  ]);
-
-  return <RouterProvider router={router} />
+  return (
+    <div>
+      {data && (
+        <div className='grid grid-cols-3 space-y-2 p-3'>
+          {data.recipes.map((recipe) => {
+            return (
+              <div key={recipe.id}>
+                <img src={recipe.image} alt="" />
+                <h1>{recipe.name}</h1>
+                <h1>Ingredients</h1>
+                {recipe.ingredients.map((ing, i) => {
+                  return <p key={i}>{`${i + 1}. ${ing}`}</p>;
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
