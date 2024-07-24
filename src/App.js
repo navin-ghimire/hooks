@@ -1,42 +1,54 @@
+import { avatar, Button, Input } from '@material-tailwind/react';
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import { useFormik } from 'formik'
+import React, { useEffect, useState } from 'react'
 
 const App = () => {
-  const [data, setData] = useState(null);
+
+  const [search, setSearch] = useState('spider');
+  const [data, setData] = useState();
+
+  const formik = useFormik({
+    initialValues: {
+      search: ''
+    },
+    onSubmit: (val) => {
+
+      setSearch(val.search);
+
+    }
+  });
 
   const getData = async () => {
     try {
-      const response = await axios.get('https://dummyjson.com/recipes');
-      setData(response.data);
+      const response = await axios.get(`http://www.omdbapi.com?apikey=aed6909c&s=${search}`);
+      setData(response.data.Search);
     } catch (err) {
-      console.error("Error fetching data: ", err);
+      
     }
   }
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [search])
+
+  console.log(data);
 
   return (
-    <div>
-      {data && (
-        <div className='grid grid-cols-3 space-y-2 p-3'>
-          {data.recipes.map((recipe) => {
-            return (
-              <div key={recipe.id}>
-                <img src={recipe.image} alt="" />
-                <h1>{recipe.name}</h1>
-                <h1>Ingredients</h1>
-                {recipe.ingredients.map((ing, i) => {
-                  return <p key={i}>{`${i + 1}. ${ing}`}</p>;
-                })}
-              </div>
-            );
-          })}
-        </div>
-      )}
+    <div className='p-5'>
+      <div className="search-info max-w-[200px]">
+        <form onSubmit={formik.handleSubmit} className='flex gap-3'>
+          <div>
+          <Input name='search'
+          value={formik.values.search}
+          onChange={formik.handleChange} label='search movie' />
+          </div>
+
+          <Button type='submit' size='sm'>Submit</Button>
+        </form>
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
