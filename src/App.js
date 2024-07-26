@@ -1,54 +1,25 @@
-import { avatar, Button, Input } from '@material-tailwind/react';
-import axios from 'axios';
-import { useFormik } from 'formik'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import RootLayout from './ui/RootLayout'
+import Home from './features/dashboard/Home'
 
 const App = () => {
 
-  const [search, setSearch] = useState('spider');
-  const [data, setData] = useState();
 
-  const formik = useFormik({
-    initialValues: {
-      search: ''
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <RootLayout />,
+      children: [
+        {
+          index: true,
+          element: <Home />
+        }
+      ]
     },
-    onSubmit: (val) => {
+  ])
 
-      setSearch(val.search);
-
-    }
-  });
-
-  const getData = async () => {
-    try {
-      const response = await axios.get(`http://www.omdbapi.com?apikey=aed6909c&s=${search}`);
-      setData(response.data.Search);
-    } catch (err) {
-      
-    }
-  }
-
-  useEffect(() => {
-    getData();
-  }, [search])
-
-  console.log(data);
-
-  return (
-    <div className='p-5'>
-      <div className="search-info max-w-[200px]">
-        <form onSubmit={formik.handleSubmit} className='flex gap-3'>
-          <div>
-          <Input name='search'
-          value={formik.values.search}
-          onChange={formik.handleChange} label='search movie' />
-          </div>
-
-          <Button type='submit' size='sm'>Submit</Button>
-        </form>
-      </div>
-    </div>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App
