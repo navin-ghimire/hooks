@@ -2,6 +2,7 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import RootLayout from './ui/RootLayout'
 import Home from './features/dashboard/Home'
+import Blogs from './features/blog/Blogs'
 
 const App = () => {
 
@@ -13,7 +14,7 @@ const App = () => {
       children: [
         {
           index: true,
-          element: <Home />
+          element: <Blogs />
         }
       ]
     },
