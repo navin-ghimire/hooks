@@ -13,10 +13,10 @@ import {
 } from "@material-tailwind/react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
 import { addToBlog } from './blogSlice';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 const radioData = [
   {value: 'news', color: 'red', label: 'News'},
@@ -27,16 +27,14 @@ const CheckBoxData = [
   {color: 'blue', value: 'blue', label: 'Blue'},
   {color: 'green', value: 'green', label: 'Green'}
 ];
-
-
-
   
 
-const AddForm = () => {
-
+const EditForm = () => {
+  const {id} = useParams();
   const dispatch = useDispatch();
-
+  const { blogs } = useSelector((state) => state.blogSlice);
   const nav = useNavigate();
+
 
   const blogSchema = Yup.object({
     title: Yup.string().min(5).max(100).required(),
@@ -192,4 +190,4 @@ const AddForm = () => {
   )
 }
 
-export default AddForm
+export default EditForm
