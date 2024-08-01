@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   Input,
@@ -39,13 +39,17 @@ const AddForm = () => {
   const nav = useNavigate();
 
   const blogSchema = Yup.object({
-    title: Yup.string().min(5).max(100).required(),
-    author: Yup.string().required(),
-    blogType: Yup.string().required(),
-    someEx: Yup.array().min(1).required(),
-    country: Yup.string().required(),
-    rating: Yup.number().required(),
-    description: Yup.string().min(10).max(200).required()
+    // title: Yup.string().min(5).max(100).required(),
+    // author: Yup.string().required(),
+    // blogType: Yup.string().required(),
+    // someEx: Yup.array().min(1).required(),
+    // country: Yup.string().required(),
+    // rating: Yup.number().required(),
+    // description: Yup.string().min(10).max(200).required(),
+    image: Yup.mixed().test('fileType', 'invalid image', (e) => {
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        return e && validTypes.includes(e.type);
+    })
   });
 
 
@@ -57,7 +61,8 @@ const AddForm = () => {
         someEx: [],
         country: '',
         rating: null,
-        description: ''
+        description: '',
+        image: null
     },
     onSubmit: (val, {resetForm}) => {
       dispatch(addToBlog({ ...val, id: nanoid() }));
@@ -145,7 +150,6 @@ const AddForm = () => {
           <div>
          <div className="w-72">
       <Select onChange={(e) => setFieldValue('country', e)} 
-         name='chooseOne'
          label="Select Country">
         <Option value='Nepal'>Nepal</Option>
         <Option value='USA'>USA</Option>
@@ -157,6 +161,7 @@ const AddForm = () => {
        {errors.country && touched.country && <h1 className='text-red-600'>{errors.country}</h1>}
        </div>
           
+         
         
            <div>
             <Typography>Rating</Typography>
@@ -164,6 +169,28 @@ const AddForm = () => {
             {errors.rating && touched.rating && <h1 className='text-red-600'>{errors.rating}</h1>}
            </div>
            
+
+
+
+
+           <div>
+             <Input onChange={(e) => {
+              const file = e.target.files[0];
+              // const url = URL.createObjectURL(file);
+              setFieldValue('image', file);
+              // const reader = new FileReader();
+              // reader.readAsDataURL(file);
+              
+              // reader.addEventListener('load', (e) => {
+              //   setFieldValue('image', e.target.result);
+              // });
+             }} type='file' 
+             name='image'
+             label='select image' />
+
+             {values.image && !errors.image &&  <img src={values.image} alt='' className='h-[220px] w-full mt-5 object-cover' />}
+             {errors.image && touched.image && <h1 className='text-red-600'>{errors.image}</h1>}
+           </div>
 
           <div>
             <Textarea 
@@ -175,10 +202,6 @@ const AddForm = () => {
           {errors.description && touched.description && <h1 className='text-red-600'>{errors.description}</h1>}
           </div>
           <div>
-          {/* <div>
-            <Input type='file' 
-            label='select image' />
-          </div> */}
          
         </div>
 

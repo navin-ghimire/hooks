@@ -14,9 +14,8 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
-import { addToBlog } from './blogSlice';
 import { useNavigate, useParams } from 'react-router';
+import { updateBlog } from './blogSlice';
 
 const radioData = [
   {value: 'news', color: 'red', label: 'News'},
@@ -33,6 +32,10 @@ const EditForm = () => {
   const {id} = useParams();
   const dispatch = useDispatch();
   const { blogs } = useSelector((state) => state.blogSlice);
+
+
+  const blog = blogs.find((blog) => blog.id === id );
+
   const nav = useNavigate();
 
 
@@ -49,16 +52,16 @@ const EditForm = () => {
 
   const { handleChange, handleSubmit, setFieldValue, values, errors, touched } = useFormik({
     initialValues:{
-        title: '',
-        author: '',
-        blogType: '',
-        someEx: [],
-        country: '',
-        rating: null,
-        description: ''
+        title: blog.title,
+        author: blog.author,
+        blogType: blog.blogType,
+        someEx: blog.someEx,
+        country: blog.country,
+        rating: blog.rating,
+        description: blog.discription
     },
     onSubmit: (val, {resetForm}) => {
-      dispatch(addToBlog({ ...val, id: nanoid() }));
+      dispatch(updateBlog({ ...val, id: id }));
       nav(-1);
     },
     validationSchema: blogSchema
@@ -111,6 +114,7 @@ const EditForm = () => {
             color={rad.color}
             name='blogType'
             onChange={handleChange}
+            checked={rad.value === values.blogType}
             value={rad.value}
             label={rad.label} />;
 
@@ -129,6 +133,7 @@ const EditForm = () => {
                  {CheckBoxData.map((check, i) => {
                     return <Checkbox
                     key={i}
+                    checked={values.someEx.includes(check.value)}
                     name='someEx'
                     onChange={handleChange}
                     color={check.color}
@@ -143,8 +148,7 @@ const EditForm = () => {
           <div>
          <div className="w-72">
       <Select onChange={(e) => setFieldValue('country', e)} 
-         name='chooseOne'
-         label="Select Country">
+         label="Select Country" value={values.country}>
         <Option value='Nepal'>Nepal</Option>
         <Option value='USA'>USA</Option>
         <Option value='UK'>UK</Option>
@@ -154,11 +158,15 @@ const EditForm = () => {
        </div>
        {errors.country && touched.country && <h1 className='text-red-600'>{errors.country}</h1>}
        </div>
-          
+           
+        <div>
+            <Input type='file' 
+            label='select image' />
+        </div>
         
            <div>
             <Typography>Rating</Typography>
-            <Rating onChange={(e) => setFieldValue('rating', e)} />
+            <Rating value={values.rating} onChange={(e) => setFieldValue('rating', e)} />
             {errors.rating && touched.rating && <h1 className='text-red-600'>{errors.rating}</h1>}
            </div>
            
@@ -173,10 +181,7 @@ const EditForm = () => {
           {errors.description && touched.description && <h1 className='text-red-600'>{errors.description}</h1>}
           </div>
           <div>
-          {/* <div>
-            <Input type='file' 
-            label='select image' />
-          </div> */}
+
          
         </div>
 

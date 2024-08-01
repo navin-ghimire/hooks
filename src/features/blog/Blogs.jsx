@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Card, IconButton, Rating, Typography } from "@material-tailwind/react";
 import AlertDialog from '../../ui/AlertDialog';
 import { useNavigate } from 'react-router';
  
-const TABLE_HEAD = ["Title", "Author", "BlogType", "Description", "Rating","Country", "Update", "Delete"];
+const TABLE_HEAD = ["Title", "Author", "BlogType", "Description", "Rating","Country", "Image", "Update", "Delete"];
 
 
 const Blogs = () => {
@@ -18,11 +18,19 @@ const Blogs = () => {
 
   const {blogs} = useSelector((state) => state.blogSlice);
 
-  console.log(blogs);
+  // useEffect(() => {
+  //   window.addEventListener('keypress', (e) => {
+
+  //   });
+  // }, [])
+   
+
+
+
   return (
     <div className='p-7'>
-    <Card className="h-full w-full overflow-scroll">
-    <table className="w-full min-w-max table-auto text-left">
+    <Card className="h-full w-full">
+    <table className="w-full table-auto text-left">
       <thead>
         <tr>
           {TABLE_HEAD.map((head) => (
@@ -42,7 +50,7 @@ const Blogs = () => {
         </tr>
       </thead>
       <tbody>
-        {blogs.map(({ title, author, blogType, someEx, description, rating, country, id }, index) => {
+        {blogs.map(({ title, author, blogType, someEx, description, rating, country, image, id }, index) => {
           const isLast = index === blogs.length - 1;
           const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -86,26 +94,35 @@ const Blogs = () => {
               </td>
 
                <td className={classes}>
-                    <Rating value={rating} />
+                    <Rating readonly value={rating} />
               </td>
 
-                  <td className={classes}>
-                <Typography
-                  as="a"
-                  href="#"
-                  variant="small"
-                  color="blue-gray"
-                  className="font-medium"
-                >
-                  {country}
-                </Typography>
-              </td>
+
+
               <td className={classes}>
                 <Typography
                   variant="small"
                   color="blue-gray"
                   className="font-medium"
                 >
+
+                  {country}
+                </Typography>
+              </td>
+
+
+                  <td className=''>
+
+                  <img src={image} alt="img" />
+              </td>
+              <td className=''>
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-medium"
+                >
+
+             
                  
                  <IconButton onClick={() => nav(`/edit-blog/${id}`)} size='sm' color='green'>
                        <i className="fas fa-edit" />
