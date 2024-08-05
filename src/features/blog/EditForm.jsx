@@ -28,6 +28,8 @@ const CheckBoxData = [
 ];
   
 
+   export const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
 const EditForm = () => {
   const {id} = useParams();
   const dispatch = useDispatch();
@@ -48,7 +50,6 @@ const EditForm = () => {
     rating: Yup.number().required(),
     description: Yup.string().min(10).max(200).required(),
     // image: Yup.mixed().test('fileType', 'invalid image', (e) => {
-    //   const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     //     return e && validTypes.includes(e.type);
     // })
   });
@@ -67,9 +68,25 @@ const EditForm = () => {
         baseImage: blog.baseImage
     },
     onSubmit: (val, {resetForm}) => {
-      delete val.image;
-      dispatch(updateBlog({ ...val, id: id }));
-      nav(-1);
+
+       if(val.image === null) {
+        delete val.image;
+        dispatch(updateBlog({ ...val, id: id }));
+        nav(-1);
+       } else {
+         if(validTypes.includes(val.image.type)){
+          delete val.image;
+        dispatch(updateBlog({ ...val, id: id }));
+        nav(-1);
+         } else {
+          console.log('please provide image');
+         }
+
+       }
+
+      // delete val.image;
+      // dispatch(updateBlog({ ...val, id: id }));
+      // nav(-1);
     },
     validationSchema: blogSchema,
      
