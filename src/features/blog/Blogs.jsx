@@ -50,7 +50,7 @@ const Blogs = () => {
         </tr>
       </thead>
       <tbody>
-        {blogs.map(({ title, author, blogType, someEx, description, rating, country, image, id }, index) => {
+        {blogs.map(({ title, author, blogType, someEx, description, rating, country, image, baseImage, id }, index) => {
           const isLast = index === blogs.length - 1;
           const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -113,7 +113,7 @@ const Blogs = () => {
 
                   <td className=''>
 
-                  <img src={image} alt="img" />
+                  <img src={baseImage} alt="img" />
               </td>
               <td className=''>
                 <Typography

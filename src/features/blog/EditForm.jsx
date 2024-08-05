@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   Input,
@@ -46,7 +46,11 @@ const EditForm = () => {
     someEx: Yup.array().min(1).required(),
     country: Yup.string().required(),
     rating: Yup.number().required(),
-    description: Yup.string().min(10).max(200).required()
+    description: Yup.string().min(10).max(200).required(),
+    // image: Yup.mixed().test('fileType', 'invalid image', (e) => {
+    //   const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    //     return e && validTypes.includes(e.type);
+    // })
   });
 
 
@@ -58,13 +62,17 @@ const EditForm = () => {
         someEx: blog.someEx,
         country: blog.country,
         rating: blog.rating,
-        description: blog.discription
+        description: blog.discription,
+        image: null,
+        baseImage: blog.baseImage
     },
     onSubmit: (val, {resetForm}) => {
+      delete val.image;
       dispatch(updateBlog({ ...val, id: id }));
       nav(-1);
     },
-    validationSchema: blogSchema
+    validationSchema: blogSchema,
+     
   });
 
   return ( 
@@ -159,10 +167,26 @@ const EditForm = () => {
        {errors.country && touched.country && <h1 className='text-red-600'>{errors.country}</h1>}
        </div>
            
-        <div>
-            <Input type='file' 
-            label='select image' />
-        </div>
+       <div>
+             <Input
+              onChange={(e) => {
+              const file = e.target.files[0];
+              // const url = URL.createObjectURL(file);
+              setFieldValue('image', file);
+               const reader = new FileReader();
+              reader.readAsDataURL(file);
+              
+              reader.addEventListener('load', (e) => {
+                setFieldValue('baseImage', e.target.result);
+               });
+             }} type='file' 
+             name='image'
+             label='update Image' />
+
+             {values.baseImage &&  <img src={values.baseImage} alt='' className='h-[220px] w-full mt-5 object-cover' />}
+             {errors.image && touched.image && <h1 className='text-red-600'>{errors.image}</h1>}
+           </div>
+
         
            <div>
             <Typography>Rating</Typography>

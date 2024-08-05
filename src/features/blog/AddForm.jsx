@@ -62,9 +62,11 @@ const AddForm = () => {
         country: '',
         rating: null,
         description: '',
-        image: null
+        image: null,
+        baseImage: null
     },
     onSubmit: (val, {resetForm}) => {
+      delete val.image;
       dispatch(addToBlog({ ...val, id: nanoid() }));
       nav(-1);
     },
@@ -178,17 +180,17 @@ const AddForm = () => {
               const file = e.target.files[0];
               // const url = URL.createObjectURL(file);
               setFieldValue('image', file);
-              // const reader = new FileReader();
-              // reader.readAsDataURL(file);
+               const reader = new FileReader();
+              reader.readAsDataURL(file);
               
-              // reader.addEventListener('load', (e) => {
-              //   setFieldValue('image', e.target.result);
-              // });
+              reader.addEventListener('load', (e) => {
+                setFieldValue('baseImage', e.target.result);
+               });
              }} type='file' 
              name='image'
              label='select image' />
 
-             {values.image && !errors.image &&  <img src={values.image} alt='' className='h-[220px] w-full mt-5 object-cover' />}
+             {values.baseImage && !errors.image &&  <img src={values.baseImage} alt='' className='h-[220px] w-full mt-5 object-cover' />}
              {errors.image && touched.image && <h1 className='text-red-600'>{errors.image}</h1>}
            </div>
 
